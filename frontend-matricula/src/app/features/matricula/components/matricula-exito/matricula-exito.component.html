@@ -1,0 +1,159 @@
+<div class="max-w-3xl mx-auto text-center space-y-6 py-4 animate-fadeIn">
+  
+  <!-- Icono de Éxito Animado -->
+  <div class="relative inline-block">
+    <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-md">
+      <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+      </svg>
+    </div>
+    <span class="absolute -top-1 -right-1 flex h-6 w-6">
+      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+      <span class="relative inline-flex rounded-full h-6 w-6 bg-emerald-500 text-white text-xs items-center justify-center font-bold">✓</span>
+    </span>
+  </div>
+
+  <!-- Títulos -->
+  <div>
+    <h2 class="text-2xl font-black text-gray-900 tracking-tight">¡Matrícula Formalizada con Éxito!</h2>
+    <p class="text-gray-500 mt-1 text-sm">
+      Se han emitido satisfactoriamente la <b>Ficha de Inscripción</b> y la <b>Ficha de Matrícula</b> oficial.
+    </p>
+  </div>
+
+  <!-- Tarjeta Principal con Documentos Oficiales Emitidos -->
+  <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-xs text-left space-y-5">
+    
+    <!-- Cuadrícula de Documentos Oficiales Generados -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <!-- Documento 1: Ficha de Inscripción -->
+      <div class="bg-blue-50/70 border border-blue-200/80 rounded-xl p-3.5 space-y-1">
+        <div class="text-[10px] font-bold text-blue-700 uppercase tracking-wider flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+          Ficha de Inscripción
+        </div>
+        <div class="text-base font-mono font-bold text-blue-900">
+          {{ matriculaGenerada?.codInscripcion || 'INS-2026-REG' }}
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-blue-100 text-blue-800">
+            Estado: {{ matriculaGenerada?.estadoInscripcion || 'REGISTRADA' }}
+          </span>
+        </div>
+        <p class="text-[10px] text-blue-600/90 pt-0.5">Pasa a CONSOLIDADA al pagar</p>
+      </div>
+
+      <!-- Documento 2: Carpeta Documentaria -->
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-1">
+        <div class="text-[10px] font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+          Carpeta Documentaria
+        </div>
+        <div class="text-base font-mono font-bold text-slate-900">
+          {{ matriculaGenerada?.nroExpediente || 'EXP-' + (matriculaGenerada?.dniEstudiante || '2026') }}
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800">
+            Estado: {{ matriculaGenerada?.estadoDoc || 'COMPLETO' }}
+          </span>
+        </div>
+        <p class="text-[10px] text-slate-500 pt-0.5">Requisitos verificados</p>
+      </div>
+
+      <!-- Documento 3: Ficha de Matrícula -->
+      <div class="bg-amber-50/70 border border-amber-200/80 rounded-xl p-3.5 space-y-1">
+        <div class="text-[10px] font-bold text-amber-700 uppercase tracking-wider flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+          Ficha de Matrícula
+        </div>
+        <div class="text-base font-mono font-bold text-amber-950">
+          {{ matriculaGenerada?.codMatricula || 'MAT-2026-PEND' }}
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 border border-amber-300/50">
+            Estado: {{ matriculaGenerada?.estadoMatricula || 'PENDIENTE_PAGO' }}
+          </span>
+        </div>
+        <p class="text-[10px] text-amber-700/90 pt-0.5">Pendiente en Tesorería</p>
+      </div>
+    </div>
+
+    <!-- Ficha de Datos del Alumno y Aula -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm pt-3 border-t border-gray-100">
+      <div>
+        <span class="text-xs text-gray-500 font-medium">Estudiante:</span>
+        <div class="font-bold text-gray-900 text-sm">{{ matriculaGenerada?.nombresEstudiante }}</div>
+      </div>
+      <div>
+        <span class="text-xs text-gray-500 font-medium">DNI del Alumno:</span>
+        <div class="font-mono text-gray-800 font-semibold text-sm">{{ matriculaGenerada?.dniEstudiante }}</div>
+      </div>
+      <div>
+        <span class="text-xs text-gray-500 font-medium">Aula / Sección:</span>
+        <div class="font-semibold text-gray-800 text-sm">Inicial {{ matriculaGenerada?.gradoAula }} Años - Aula {{ matriculaGenerada?.seccionAula }}</div>
+      </div>
+      <div>
+        <span class="text-xs text-gray-500 font-medium">Monto a Liquidar en Caja:</span>
+        <div class="font-mono text-emerald-700 font-bold text-base">S/ {{ matriculaGenerada?.montoTotal | number:'1.2-2' }}</div>
+      </div>
+    </div>
+
+    <!-- Ciclo de Estados según ECUs -->
+    <div class="bg-gray-50 rounded-xl p-3.5 border border-gray-200/70 text-xs text-gray-600 space-y-1.5">
+      <div class="font-bold text-gray-800 flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Flujo del Proceso según Especificación de Casos de Uso (ECU):</span>
+      </div>
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pt-1 font-medium">
+        <div class="flex items-center gap-1.5 text-blue-700">
+          <span class="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center font-bold text-[10px]">1</span>
+          <span>Inscripción: <b>REGISTRADA</b></span>
+        </div>
+        <span class="hidden sm:inline text-gray-400">➔</span>
+        <div class="flex items-center gap-1.5 text-amber-700">
+          <span class="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center font-bold text-[10px]">2</span>
+          <span>Matrícula: <b>PENDIENTE PAGO</b></span>
+        </div>
+        <span class="hidden sm:inline text-gray-400">➔</span>
+        <div class="flex items-center gap-1.5 text-emerald-700">
+          <span class="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center font-bold text-[10px]">3</span>
+          <span>Pago Tesorería: <b>CONSOLIDADA / CANCELADO</b></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botones de Acción -->
+  <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+    <!-- Botón directo a Tesorería -->
+    <button 
+      (click)="irAPagos()"
+      class="w-full sm:w-auto px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow-sm hover:shadow transition-all flex items-center justify-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg>
+      <span>Ir a Registrar Pago en Tesorería</span>
+    </button>
+
+    <button 
+      (click)="imprimirFicha()"
+      class="w-full sm:w-auto px-5 py-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold rounded-xl text-sm shadow-2xs transition-colors flex items-center justify-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+      </svg>
+      <span>Imprimir Ficha Oficial</span>
+    </button>
+
+    <button 
+      (click)="nuevaMatricula()"
+      class="w-full sm:w-auto px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl text-sm shadow-2xs transition-all flex items-center justify-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      <span>Registrar Otra Matrícula</span>
+    </button>
+  </div>
+
+</div>

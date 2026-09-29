@@ -1,0 +1,176 @@
+<div class="space-y-8 animate-fadeIn">
+  <!-- Encabezado del paso -->
+  <div class="border-b border-gray-100 pb-5">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg">
+        4
+      </div>
+      <div>
+        <h2 class="text-xl font-bold text-gray-900">Asignación de Aula y Turno</h2>
+        <p class="text-sm text-gray-500">Seleccione la sección correspondiente según la edad y disponibilidad de vacantes</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra de Filtros -->
+  <div class="bg-gray-50/70 p-5 rounded-xl border border-gray-200/80">
+    <div class="flex flex-wrap items-center gap-6">
+      <!-- Nivel -->
+      <div class="flex flex-col gap-1.5 w-40">
+        <label class="text-xs font-semibold uppercase tracking-wider text-gray-600">Nivel Educativo</label>
+        <select 
+          [(ngModel)]="nivelSeleccionado" 
+          class="w-full h-10 px-3 border border-gray-300 rounded-lg bg-white text-gray-900 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="Inicial">Inicial</option>
+        </select>
+      </div>
+
+      <!-- Grado / Edad -->
+      <div class="flex flex-col gap-1.5 w-44">
+        <label class="text-xs font-semibold uppercase tracking-wider text-gray-600">Grado / Edad</label>
+        <select 
+          [(ngModel)]="gradoSeleccionado" 
+          (change)="aplicarFiltros()"
+          class="w-full h-10 px-3 border border-gray-300 rounded-lg bg-white text-gray-900 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option [value]="3">3 Años</option>
+          <option [value]="4">4 Años</option>
+          <option [value]="5">5 Años</option>
+        </select>
+      </div>
+
+      <!-- Turno -->
+      <div class="flex flex-col gap-1.5 w-44">
+        <label class="text-xs font-semibold uppercase tracking-wider text-gray-600">Turno</label>
+        <select 
+          [(ngModel)]="turnoSeleccionado" 
+          (change)="aplicarFiltros()"
+          class="w-full h-10 px-3 border border-gray-300 rounded-lg bg-white text-gray-900 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="TODOS">Todos los Turnos</option>
+          <option value="MANANA">Mañana</option>
+          <option value="TARDE">Tarde</option>
+        </select>
+      </div>
+
+      <!-- Recargar -->
+      <div class="flex items-end ml-auto">
+        <button 
+          (click)="cargarAulas()" 
+          title="Actualizar vacantes en tiempo real"
+          class="h-10 px-4 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium rounded-lg text-xs flex items-center gap-2 shadow-2xs">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>Refrescar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de Aulas Disponibles -->
+  <div class="space-y-3">
+    <div class="flex items-center justify-between">
+      <h3 class="text-base font-bold text-gray-900">Aulas y Vacantes Disponibles</h3>
+      <span class="text-xs text-gray-500">Haga clic en la fila para seleccionar el aula</span>
+    </div>
+
+    @if (cargandoAulas) {
+      <div class="p-12 text-center text-gray-500 bg-white rounded-xl border border-gray-200">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-600 border-r-transparent mb-3"></div>
+        <p class="text-sm font-medium">Consultando aulas y aforo en la base de datos...</p>
+      </div>
+    } @else if (aulasFiltradas.length === 0) {
+      <div class="p-12 text-center text-gray-500 bg-white rounded-xl border border-gray-200">
+        <p class="text-base font-semibold text-gray-700">No se encontraron aulas para los filtros seleccionados</p>
+        <p class="text-xs text-gray-500 mt-1">Pruebe cambiando el turno o grado seleccionado.</p>
+      </div>
+    } @else {
+      <div class="overflow-hidden border border-gray-200 rounded-xl shadow-xs bg-white">
+        <table class="w-full text-sm text-left">
+          <thead class="bg-gray-50 text-gray-700 font-semibold border-b border-gray-200 uppercase text-xs tracking-wider">
+            <tr>
+              <th class="px-6 py-4 w-14 text-center">Sel.</th>
+              <th class="px-6 py-4">Aula / Sección</th>
+              <th class="px-6 py-4">Grado / Edad</th>
+              <th class="px-6 py-4">Turno</th>
+              <th class="px-6 py-4 text-center">Aforo Máximo</th>
+              <th class="px-6 py-4 text-center">Vacantes Disponibles</th>
+              <th class="px-6 py-4 text-center">Disponibilidad</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            @for (aula of aulasFiltradas; track aula.idAula) {
+              <tr 
+                (click)="seleccionarAula(aula)"
+                class="cursor-pointer transition-colors"
+                [ngClass]="{
+                  'bg-blue-50/70 border-l-4 border-l-blue-600': aulaSeleccionada?.idAula === aula.idAula,
+                  'hover:bg-gray-50': aulaSeleccionada?.idAula !== aula.idAula && aula.vacantesDisp > 0,
+                  'opacity-60 bg-gray-50 cursor-not-allowed': aula.vacantesDisp <= 0
+                }">
+                <td class="px-6 py-4 text-center" (click)="$event.stopPropagation()">
+                  <input 
+                    type="radio" 
+                    name="aulaSeleccionada"
+                    [checked]="aulaSeleccionada?.idAula === aula.idAula"
+                    [disabled]="aula.vacantesDisp <= 0"
+                    (change)="seleccionarAula(aula)"
+                    class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500 cursor-pointer">
+                </td>
+                <td class="px-6 py-4 font-bold text-gray-900">
+                  Aula {{ aula.nombreSeccion }}
+                </td>
+                <td class="px-6 py-4 text-gray-700 font-medium">
+                  Inicial {{ aula.gradoEdad }} Años
+                </td>
+                <td class="px-6 py-4 text-gray-700">
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-gray-100 text-gray-800">
+                    {{ aula.turno === 'MANANA' ? 'Mañana (8:00 - 13:00)' : 'Tarde (13:30 - 18:00)' }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-center font-medium text-gray-600">
+                  {{ aula.aforoMaximo }} niños
+                </td>
+                <td class="px-6 py-4 text-center font-bold"
+                  [ngClass]="aula.vacantesDisp > 5 ? 'text-emerald-700 font-mono text-base' : (aula.vacantesDisp > 0 ? 'text-amber-600 font-mono text-base' : 'text-red-600')">
+                  {{ aula.vacantesDisp }}
+                </td>
+                <td class="px-6 py-4 text-center">
+                  @if (aula.vacantesDisp > 0) {
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+                      Disponible
+                    </span>
+                  } @else {
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+                      Sin Vacantes
+                    </span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  <!-- Botones de Acción -->
+  <div class="flex justify-between items-center pt-6 border-t border-gray-200">
+    <button 
+      type="button"
+      (click)="regresar()" 
+      class="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors shadow-xs">
+      ← Anterior
+    </button>
+    
+    <button 
+      type="button"
+      (click)="continuar()" 
+      [disabled]="!aulaSeleccionada"
+      class="px-6 py-2.5 bg-[#1E293B] hover:bg-slate-700 text-white font-semibold rounded-lg shadow-sm hover:shadow transition-all flex items-center gap-2 disabled:bg-gray-400">
+      <span>Continuar a Resumen y Confirmación</span>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+  </div>
+</div>

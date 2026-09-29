@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: .
+    container_name: matricula_frontend
+    restart: always
+    ports:
+      - "4200:80" # El puerto web por defecto (HTTP)
+    networks:
+      - matriucla_default # Conectamos este frontend a la misma red del backend
+
+# Le decimos a Docker que esta red ya existe (la creó el backend)
+networks:
+  matriucla_default:
+    external: true

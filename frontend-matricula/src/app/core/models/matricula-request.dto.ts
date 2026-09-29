@@ -1,0 +1,31 @@
+export interface MatriculaRequestDTO {
+  tipoEstudiante: string;
+  tipoDocEstudiante: string;
+  nroDocEstudiante: string;
+  nombresEstudiante: string;
+  apellidosEstudiante: string;
+  fechaNacimiento: string;
+  sexo: string;
+  nroPartidaNac?: string;
+  colegioProcedencia?: string;
+  tieneTraslado?: boolean;
+  codEstudiantePrevio?: string;
+  anioIngreso?: number;
+  observacionAcademica?: string;
+  tipoDocTutor: string;
+  nroDocTutor: string;
+  nombresTutor: string;
+  apellidosTutor: string;
+  parentescoTutor: string;
+  celularTutor?: string;
+  direccionTutor?: string;
+  correoTutor?: string;
+  tieneDniMenor?: boolean;
+  tieneDniTutor?: boolean;
+  tieneCartillaVacunas?: boolean;
+  tieneTamizajeHemog?: boolean;
+  tieneFichaSiagie?: boolean;
+  tieneCertifEstudios?: boolean;
+  tienePartidaNac?: boolean;
+  idAula: number;
+}

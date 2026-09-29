@@ -1,0 +1,115 @@
+<div class="max-w-xl mx-auto space-y-8 py-2 animate-fadeIn">
+  
+  <!-- Icono de Éxito -->
+  <div class="text-center space-y-2">
+    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 mb-2 shadow-sm">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+      </svg>
+    </div>
+    <h2 class="text-2xl font-black text-gray-900">¡Recaudación Conforme!</h2>
+    <p class="text-xs text-gray-500">El pago se ha asentado en los libros contables y la matrícula se encuentra CANCELADA</p>
+  </div>
+
+  <!-- COMPROBANTE OFICIAL ELECTRÓNICO (Estilo Ticket / Boleta) -->
+  <div class="bg-white rounded-2xl border-2 border-dashed border-gray-300 p-8 shadow-sm space-y-6 relative overflow-hidden">
+    
+    <!-- Sello de Pagado decorativo -->
+    <div class="absolute right-4 top-16 -rotate-12 border-4 border-emerald-600 text-emerald-600 font-black text-xs px-3 py-1 uppercase tracking-widest rounded-md opacity-25 select-none pointer-events-none">
+      PAGADO / CONFORME
+    </div>
+
+    <!-- Encabezado del Comprobante -->
+    <div class="text-center border-b border-gray-200 pb-5 space-y-1">
+      <div class="text-sm font-black uppercase tracking-wider text-gray-900">I.E. MI PEQUEÑO MUNDO</div>
+      <div class="text-xs text-gray-500">R.U.C. 20489561234 • Educación Inicial y Primaria</div>
+      <div class="text-xs text-gray-500">Av. Las Palmeras 450, Lima - Perú</div>
+      <div class="inline-block mt-2 px-3 py-1 rounded bg-slate-900 text-white font-mono text-xs font-bold">
+        {{ comprobante?.tipoComprobante === 'BOLETA' ? 'BOLETA DE VENTA ELECTRÓNICA' : 'RECIBO INSTITUCIONAL DE CAJA' }}
+      </div>
+      <div class="font-mono text-sm font-bold text-gray-800 pt-1">
+        Nº {{ comprobante?.nroComprobante }}
+      </div>
+    </div>
+
+    <!-- Metadatos de la Transacción -->
+    <div class="grid grid-cols-2 gap-3 text-xs border-b border-gray-100 pb-4">
+      <div>
+        <span class="text-gray-400 block font-medium">Fecha y Hora de Emisión:</span>
+        <span class="font-mono text-gray-800 font-semibold">{{ comprobante?.fechaEmision | date:'dd/MM/yyyy HH:mm:ss' }}</span>
+      </div>
+      <div>
+        <span class="text-gray-400 block font-medium">Medio de Pago:</span>
+        <span class="font-bold text-gray-800 uppercase">{{ comprobante?.medioPago }}</span>
+      </div>
+      @if (comprobante?.nroOperacion) {
+        <div class="col-span-2">
+          <span class="text-gray-400 block font-medium">Nº de Operación Bancaria / Voucher:</span>
+          <span class="font-mono text-gray-800 font-bold">{{ comprobante?.nroOperacion }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- Datos del Alumno y Matrícula -->
+    <div class="space-y-2 text-xs border-b border-gray-100 pb-4">
+      <div class="flex justify-between">
+        <span class="text-gray-500">Estudiante:</span>
+        <span class="font-bold text-gray-900 text-right">{{ matricula?.nombresEstudiante || 'Estudiante Matriculado' }}</span>
+      </div>
+      <div class="flex justify-between">
+        <span class="text-gray-500">DNI del Alumno:</span>
+        <span class="font-mono text-gray-800">{{ comprobante?.dniEstudiante }}</span>
+      </div>
+      <div class="flex justify-between">
+        <span class="text-gray-500">Código de Matrícula:</span>
+        <span class="font-mono font-bold text-blue-600">{{ comprobante?.codMatricula }}</span>
+      </div>
+    </div>
+
+    <!-- Detalle de Conceptos -->
+    <div class="space-y-3">
+      <div class="flex justify-between text-xs font-semibold text-gray-500 border-b border-gray-100 pb-1">
+        <span>Descripción del Concepto</span>
+        <span>Importe</span>
+      </div>
+      <div class="flex justify-between text-xs font-medium text-gray-800">
+        <span>Derecho de Matrícula Escolar - Año 2026</span>
+        <span class="font-mono font-semibold">S/ {{ comprobante?.importePagado | number:'1.2-2' }}</span>
+      </div>
+      <div class="flex justify-between items-baseline pt-4 border-t-2 border-gray-900">
+        <span class="text-sm font-extrabold text-gray-900">TOTAL CANCELADO:</span>
+        <span class="text-2xl font-black font-mono text-emerald-700">S/ {{ comprobante?.importePagado | number:'1.2-2' }}</span>
+      </div>
+    </div>
+
+    <!-- Pie del Ticket -->
+    <div class="text-center pt-4 border-t border-dashed border-gray-200">
+      <p class="text-[11px] text-gray-400">
+        Conserve este comprobante como constancia oficial de pago.
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Botones de Acción -->
+  <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+    <button 
+      (click)="imprimirComprobante()"
+      class="w-full sm:w-auto px-6 py-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold rounded-xl text-sm shadow-xs transition-colors flex items-center justify-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+      </svg>
+      <span>Imprimir Comprobante</span>
+    </button>
+
+    <button 
+      (click)="nuevoCobro()"
+      class="w-full sm:w-auto px-8 py-3 bg-[#1E293B] hover:bg-slate-700 text-white font-semibold rounded-xl text-sm shadow-sm hover:shadow transition-all flex items-center justify-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      <span>Realizar Otro Cobro</span>
+    </button>
+  </div>
+
+</div>

@@ -1,0 +1,287 @@
+<div class="space-y-8 animate-fadeIn">
+  <!-- Encabezado del paso -->
+  <div class="border-b border-gray-100 pb-5">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg">
+        2
+      </div>
+      <div>
+        <h2 class="text-xl font-bold text-gray-900">Detalle de Matrícula y Cobro</h2>
+        <p class="text-sm text-gray-500">Seleccione el comprobante fiscal, el medio de pago y registre el importe liquidado</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    
+    <!-- COLUMNA IZQUIERDA: RESUMEN DE MATRÍCULA Y TOTAL (5 cols) -->
+    <div class="lg:col-span-5 space-y-6">
+      
+      <!-- Tarjeta Matrícula -->
+      <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-xs space-y-4">
+        <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-gray-500">Expediente a Cobrar</span>
+          <span class="font-mono text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700">
+            {{ matricula.codMatricula }}
+          </span>
+        </div>
+
+        <div class="space-y-3 text-sm">
+          <div>
+            <span class="text-xs text-gray-500 block">Estudiante:</span>
+            <span class="font-bold text-gray-900 text-base">{{ matricula.nombresEstudiante }}</span>
+            <span class="text-xs font-mono text-gray-500 block">DNI: {{ matricula.dniEstudiante }}</span>
+          </div>
+
+          <div>
+            <span class="text-xs text-gray-500 block">Aula y Grado:</span>
+            <span class="font-medium text-gray-800">Inicial {{ matricula.gradoAula }} Años - Sección {{ matricula.seccionAula }}</span>
+          </div>
+
+          <div class="border-t border-gray-100 pt-3">
+            <div class="flex justify-between items-center text-xs text-gray-600 py-1">
+              <span>Derecho de Matrícula:</span>
+              <span class="font-mono">S/ {{ matricula.montoTotal | number:'1.2-2' }}</span>
+            </div>
+            <div class="flex justify-between items-center text-xs text-gray-600 py-1">
+              <span>Gastos Administrativos / Carpeta:</span>
+              <span class="font-mono text-emerald-600 font-semibold">Incluido</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta Total a Pagar -->
+      <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-white shadow-sm space-y-3">
+        <span class="text-xs font-semibold uppercase tracking-widest text-slate-400">Total a Liquidar</span>
+        <div class="text-3xl font-extrabold font-mono text-emerald-400 tracking-tight">
+          S/ {{ matricula.montoTotal | number:'1.2-2' }}
+        </div>
+        <div class="text-xs text-slate-400">
+          Moneda: Soles (PEN) • Comprobante válido para fines fiscales escolares
+        </div>
+      </div>
+
+    </div>
+
+    <!-- COLUMNA DERECHA: CONFIGURACIÓN DE PAGO (7 cols) -->
+    <div class="lg:col-span-7 bg-white rounded-2xl border border-gray-200 p-6 shadow-xs space-y-6">
+      
+      <!-- 1. Tipo de Comprobante -->
+      <div class="space-y-3">
+        <label class="block text-xs font-bold uppercase tracking-wider text-gray-700">1. Tipo de Comprobante</label>
+        <div class="grid grid-cols-2 gap-4">
+          <label 
+            class="flex items-center gap-3 p-3.5 border rounded-xl cursor-pointer transition-all"
+            [ngClass]="tipoComprobante === 'BOLETA' ? 'border-blue-600 bg-blue-50/50 shadow-xs ring-2 ring-blue-100' : 'border-gray-200 hover:bg-gray-50'">
+            <input type="radio" name="comprobante" value="BOLETA" [(ngModel)]="tipoComprobante" class="w-4 h-4 text-blue-600">
+            <div>
+              <div class="text-sm font-bold text-gray-900">Boleta de Venta</div>
+              <div class="text-[11px] text-gray-500">Persona natural (Padre de familia)</div>
+            </div>
+          </label>
+
+          <label 
+            class="flex items-center gap-3 p-3.5 border rounded-xl cursor-pointer transition-all"
+            [ngClass]="tipoComprobante === 'RECIBO' ? 'border-blue-600 bg-blue-50/50 shadow-xs ring-2 ring-blue-100' : 'border-gray-200 hover:bg-gray-50'">
+            <input type="radio" name="comprobante" value="RECIBO" [(ngModel)]="tipoComprobante" class="w-4 h-4 text-blue-600">
+            <div>
+              <div class="text-sm font-bold text-gray-900">Recibo Institucional</div>
+              <div class="text-[11px] text-gray-500">Recibo interno de tesorería escolar</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- 2. Medio de Pago -->
+      <div class="space-y-3">
+        <label class="block text-xs font-bold uppercase tracking-wider text-gray-700">2. Medio de Pago</label>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          
+          <button 
+            type="button"
+            (click)="medioPago = 'EFECTIVO'"
+            class="p-3 border rounded-xl text-center transition-all flex flex-col items-center gap-1.5"
+            [ngClass]="medioPago === 'EFECTIVO' ? 'border-blue-600 bg-blue-600 text-white font-bold shadow-xs' : 'border-gray-200 hover:bg-gray-50 text-gray-700 font-medium'">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            <span class="text-xs">Efectivo</span>
+          </button>
+
+          <button 
+            type="button"
+            (click)="medioPago = 'TRANSFERENCIA'"
+            class="p-3 border rounded-xl text-center transition-all flex flex-col items-center gap-1.5"
+            [ngClass]="medioPago === 'TRANSFERENCIA' ? 'border-blue-600 bg-blue-600 text-white font-bold shadow-xs' : 'border-gray-200 hover:bg-gray-50 text-gray-700 font-medium'">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+            </svg>
+            <span class="text-xs">Transferencia</span>
+          </button>
+
+          <button 
+            type="button"
+            (click)="medioPago = 'TARJETA'"
+            class="p-3 border rounded-xl text-center transition-all flex flex-col items-center gap-1.5"
+            [ngClass]="medioPago === 'TARJETA' ? 'border-blue-600 bg-blue-600 text-white font-bold shadow-xs' : 'border-gray-200 hover:bg-gray-50 text-gray-700 font-medium'">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+            </svg>
+            <span class="text-xs">Tarjeta POS</span>
+          </button>
+
+          <button 
+            type="button"
+            (click)="medioPago = 'YAPE_PLIN'"
+            class="p-3 border rounded-xl text-center transition-all flex flex-col items-center gap-1.5"
+            [ngClass]="medioPago === 'YAPE_PLIN' ? 'border-blue-600 bg-blue-600 text-white font-bold shadow-xs' : 'border-gray-200 hover:bg-gray-50 text-gray-700 font-medium'">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+            <span class="text-xs">Yape / Plin</span>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- 3. Formulario Dinámico según Medio -->
+      @if (medioPago === 'EFECTIVO') {
+        <div class="bg-gray-50/80 rounded-xl p-4 border border-gray-200 space-y-4">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-bold uppercase tracking-wider text-gray-700">Monto Recibido del Apoderado</label>
+            <div class="flex items-center gap-2">
+              <button 
+                type="button" 
+                (click)="setMontoExacto()"
+                class="px-2.5 py-1 rounded bg-white border border-gray-300 text-xs font-semibold text-gray-700 hover:bg-gray-100">
+                Exacto (S/ {{ matricula.montoTotal }})
+              </button>
+              <button 
+                type="button" 
+                (click)="sumarEfectivo(50)"
+                class="px-2.5 py-1 rounded bg-white border border-gray-300 text-xs font-semibold text-gray-700 hover:bg-gray-100">
+                +S/ 50
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 items-center">
+            <div class="relative">
+              <span class="absolute left-3.5 top-1/2 -translate-y-1/2 font-mono font-bold text-gray-500">S/</span>
+              <input 
+                type="number" 
+                step="0.10"
+                [(ngModel)]="montoRecibido"
+                (ngModelChange)="onDatosCobroChange()"
+                class="w-full h-11 pl-9 pr-3 border border-gray-300 rounded-lg text-gray-900 font-mono font-bold text-lg focus:ring-2 focus:ring-blue-500 bg-white">
+            </div>
+
+            <div class="p-2.5 rounded-lg border text-right"
+              [ngClass]="vuelto >= 0 && (montoRecibido || 0) >= (matricula.montoTotal || 0) ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-red-50 border-red-200 text-red-700'">
+              <span class="text-xs font-medium block">Vuelto a Entregar:</span>
+              <span class="text-xl font-mono font-black">S/ {{ vuelto | number:'1.2-2' }}</span>
+            </div>
+          </div>
+        </div>
+      } @else {
+        <div class="bg-gray-50/80 rounded-xl p-4 border border-gray-200 space-y-2">
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700">
+            Nº de Operación / Código de Voucher *
+          </label>
+          <input 
+            type="text" 
+            [(ngModel)]="nroOperacion" 
+            (ngModelChange)="onDatosCobroChange()"
+            placeholder="Ej: 0048759623 o código de transacción bancaria"
+            class="w-full h-11 px-4 border border-gray-300 rounded-lg text-gray-900 font-mono font-semibold focus:ring-2 focus:ring-blue-500 bg-white">
+          <p class="text-[11px] text-gray-500">
+            Este número quedará archivado como sustento contable de la recaudación.
+          </p>
+        </div>
+      }
+
+      <!-- Paso 9 del ECU-CUS-02: Botón [Verificar Pago] -->
+      <div class="pt-2">
+        <div class="flex items-center justify-between p-4 rounded-xl border"
+          [ngClass]="pagoVerificado ? 'bg-emerald-50/80 border-emerald-200' : 'bg-blue-50/50 border-blue-200'">
+          <div class="flex items-center gap-3">
+            @if (pagoVerificado) {
+              <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">
+                ✓
+              </div>
+              <div>
+                <p class="text-xs font-bold text-emerald-900">Pago Verificado Conforme (Paso 10 ECU-CUS-02)</p>
+                <p class="text-[11px] text-emerald-700">Importe exacto liquidado. Proceda a emitir el comprobante.</p>
+              </div>
+            } @else {
+              <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs">
+                9
+              </div>
+              <div>
+                <p class="text-xs font-bold text-blue-900">Verificación de Pago Requerida</p>
+                <p class="text-[11px] text-blue-700">Compruebe el dinero o voucher antes de emitir el comprobante.</p>
+              </div>
+            }
+          </div>
+
+          <button 
+            type="button"
+            (click)="verificarPago()"
+            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow-xs transition-colors flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Verificar Pago</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Botones de Acción (ECU-CUS-02 Paso 1: Verificar, Emitir, Anular, Salir) -->
+  <div class="flex flex-wrap justify-between items-center gap-4 pt-6 border-t border-gray-200">
+    <div class="flex items-center gap-3">
+      <button 
+        type="button"
+        (click)="regresar()" 
+        [disabled]="procesando"
+        class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors shadow-xs disabled:opacity-50 text-xs">
+        ← Salir / Volver
+      </button>
+
+      <button 
+        type="button"
+        (click)="anularCobro()" 
+        [disabled]="procesando"
+        class="px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-semibold rounded-lg transition-colors text-xs flex items-center gap-1.5 shadow-2xs">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+        <span>Anular Cobro</span>
+      </button>
+    </div>
+    
+    <!-- Paso 11 del ECU-CUS-02: Botón [Emitir Comprobante] -->
+    <button 
+      type="button"
+      (click)="emitirComprobante()" 
+      [disabled]="procesando || !pagoVerificado"
+      class="px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow-sm hover:shadow-md transition-all flex items-center gap-2.5 disabled:bg-gray-300 disabled:cursor-not-allowed">
+      @if (procesando) {
+        <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+        <span>Emitiendo Comprobante...</span>
+      } @else {
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+        </svg>
+        <span>Emitir Comprobante</span>
+      }
+    </button>
+  </div>
+</div>

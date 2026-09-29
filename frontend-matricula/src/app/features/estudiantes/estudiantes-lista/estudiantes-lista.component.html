@@ -1,0 +1,132 @@
+<div class="p-6 space-y-6">
+
+  <!-- Encabezado -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Estudiantes Registrados</h1>
+      <p class="text-sm text-gray-500 mt-1">Lista de todos los estudiantes con su estado en el año lectivo actual</p>
+    </div>
+    <button
+      (click)="irAMatricula()"
+      class="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white text-sm font-semibold rounded-lg hover:bg-slate-800 transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      Nueva Matrícula
+    </button>
+  </div>
+
+  <!-- Buscador y conteo -->
+  <div class="flex items-center gap-4">
+    <div class="relative flex-1 max-w-sm">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      <input
+        type="text"
+        [(ngModel)]="textoBusqueda"
+        (ngModelChange)="filtrar()"
+        placeholder="Buscar por nombre, apellido o DNI..."
+        class="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400" />
+    </div>
+    <span class="text-sm text-gray-500">
+      {{ estudiantesFiltrados.length }} de {{ estudiantes.length }} estudiantes
+    </span>
+    <button
+      (click)="cargarEstudiantes()"
+      class="p-2 text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+      title="Recargar lista">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Estado: Cargando -->
+  @if (cargando) {
+    <div class="flex items-center justify-center py-20 text-gray-400">
+      <svg class="animate-spin h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+      </svg>
+      <span class="text-sm">Cargando estudiantes...</span>
+    </div>
+  }
+
+  <!-- Estado: Error -->
+  @if (!cargando && error) {
+    <div class="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3 text-sm text-red-800">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>{{ error }}</span>
+    </div>
+  }
+
+  <!-- Tabla -->
+  @if (!cargando && !error) {
+    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50 border-b border-gray-200">
+          <tr>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600 uppercase tracking-wide text-xs">Estudiante</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600 uppercase tracking-wide text-xs">DNI</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600 uppercase tracking-wide text-xs">Apoderado</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600 uppercase tracking-wide text-xs">Estado</th>
+            <th class="px-4 py-3 text-left font-semibold text-gray-600 uppercase tracking-wide text-xs">Aula / Matrícula</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+
+          @if (estudiantesFiltrados.length === 0) {
+            <tr>
+              <td colspan="5" class="px-4 py-12 text-center text-gray-400 text-sm">
+                No se encontraron estudiantes.
+              </td>
+            </tr>
+          }
+
+          @for (est of estudiantesFiltrados; track est.idEstudiante) {
+            <tr class="hover:bg-gray-50 transition-colors">
+
+              <td class="px-4 py-3">
+                <div class="font-semibold text-gray-900">{{ est.apellidos }}, {{ est.nombres }}</div>
+                <div class="text-xs text-gray-400">{{ est.sexo === 'M' ? 'Masculino' : 'Femenino' }}</div>
+              </td>
+
+              <td class="px-4 py-3 font-mono text-gray-700">{{ est.nroDoc }}</td>
+
+              <td class="px-4 py-3">
+                <div class="text-gray-700">{{ est.nombresTutor ?? '-' }}</div>
+                <div class="text-xs text-gray-400">{{ est.celularTutor ?? '' }}</div>
+              </td>
+
+              <td class="px-4 py-3">
+                <span
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                  [ngClass]="getBadgeClass(est.condicion)">
+                  {{ getBadgeLabel(est.condicion) }}
+                </span>
+              </td>
+
+              <td class="px-4 py-3">
+                @if (est.condicion === 'YA_MATRICULADO') {
+                  <div class="text-gray-800 font-medium">{{ est.gradoAulaActual }} años — Sección {{ est.seccionAulaActual }}</div>
+                  <div class="text-xs text-gray-400 font-mono">{{ est.codMatriculaActual }}</div>
+                } @else if (est.condicion === 'PRE_INSCRITO') {
+                  <div class="text-amber-700 text-xs font-medium">Inscripción pendiente de formalizar</div>
+                  <div class="text-xs text-gray-400 font-mono">{{ est.codInscripcion }}</div>
+                } @else {
+                  <span class="text-gray-400 text-xs">Sin asignar</span>
+                }
+              </td>
+
+            </tr>
+          }
+
+        </tbody>
+      </table>
+    </div>
+  }
+
+</div>

@@ -1,0 +1,58 @@
+.step-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  flex: 1;
+}
+
+.cards-wrapper {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+}
+
+.option-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 40px 30px;
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.option-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+  transform: translateY(-2px);
+}
+
+.icon-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.option-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.option-card p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}

@@ -1,0 +1,79 @@
+<div class="max-w-4xl mx-auto space-y-6">
+  
+  <!-- Stepper Visual del Wizard (ECU-03) -->
+  <div class="bg-white rounded-2xl border border-gray-200/80 p-6 shadow-xs">
+    <div class="flex items-center justify-between relative max-w-lg mx-auto">
+      <!-- Línea de fondo del stepper -->
+      <div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-gray-100 z-0"></div>
+      
+      <!-- Línea de progreso activa -->
+      <div 
+        class="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-blue-600 transition-all duration-300 z-0"
+        [style.width.%]="((currentStep - 1) / (pasos.length - 1)) * 100">
+      </div>
+
+      <!-- Pasos individuales -->
+      @for (paso of pasos; track paso.num) {
+        <div 
+          (click)="goToStep(paso.num)"
+          class="relative z-10 flex flex-col items-center gap-2"
+          [ngClass]="{'cursor-pointer': paso.num < currentStep, 'cursor-default': paso.num >= currentStep}">
+          
+          <div 
+            class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-200 border-2"
+            [ngClass]="{
+              'bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-500/25 ring-4 ring-blue-100': currentStep === paso.num,
+              'bg-emerald-500 border-emerald-500 text-white': currentStep > paso.num,
+              'bg-white border-gray-300 text-gray-400': currentStep < paso.num
+            }">
+            @if (currentStep > paso.num) {
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+              </svg>
+            } @else {
+              <span>{{ paso.num }}</span>
+            }
+          </div>
+
+          <div class="text-center">
+            <div class="text-xs font-bold transition-colors"
+              [ngClass]="currentStep === paso.num ? 'text-blue-600 font-extrabold' : (currentStep > paso.num ? 'text-gray-800' : 'text-gray-400')">
+              {{ paso.label }}
+            </div>
+            <div class="text-[10px] text-gray-400 leading-tight">
+              {{ paso.sub }}
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Contenedor del Paso Activo -->
+  <div class="bg-white rounded-2xl border border-gray-200/80 p-8 shadow-xs min-h-[500px]">
+    @switch (currentStep) {
+      @case (1) {
+        <app-pago-buscador 
+          (next)="nextStep()" 
+          (matriculaSeleccionada)="onMatriculaSeleccionada($event)">
+        </app-pago-buscador>
+      }
+      @case (2) {
+        <app-pago-detalle 
+          [matricula]="matriculaSeleccionada!"
+          (next)="nextStep()" 
+          (prev)="prevStep()"
+          (pagoExitoso)="onPagoExitoso($event)">
+        </app-pago-detalle>
+      }
+      @case (3) {
+        <app-pago-exito 
+          [comprobante]="comprobanteGenerado"
+          [matricula]="matriculaSeleccionada"
+          (nuevoCobroClick)="reiniciarWizard()">
+        </app-pago-exito>
+      }
+    }
+  </div>
+
+</div>
