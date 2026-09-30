@@ -6,7 +6,7 @@ services:
     container_name: matricula_frontend
     restart: always
     ports:
-      - "80:80" # El puerto web por defecto (HTTP)
+      - "4200:80" # Regresamos al puerto 4200 porque el 80 está ocupado en la VPS
     networks:
       - matriucla_default # Conectamos este frontend a la misma red del backend
 
