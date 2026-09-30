@@ -16,7 +16,7 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Copiamos la app compilada de Angular. 
 # Nota: Angular 17 suele meter los archivos en una subcarpeta 'browser'. 
 # Si falla, podemos ajustar esta linea.
-COPY --from=builder /app/dist/frontend-matricula/browser /usr/share/nginx/html
+COPY --from=builder /app/dist/frontend-matricula /usr/share/nginx/html
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
