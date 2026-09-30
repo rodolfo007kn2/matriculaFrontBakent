@@ -20,7 +20,7 @@ services:
     container_name: matricula_backend
     restart: always
     ports:
-      - "8080:8080"
+      - "8085:8080"
     environment:
       - DB_URL=jdbc:mysql://db:3306/matricula_colegio_db?useSSL=false&serverTimezone=America/Lima&allowPublicKeyRetrieval=true
       - DB_USERNAME=root

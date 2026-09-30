@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../../environments/environment';
 import { EstudianteConsultaDTO } from '../models/estudiante-consulta.dto';
 import { EstudianteListadoDTO } from '../models/estudiante-listado.dto';
 
@@ -9,9 +10,9 @@ import { EstudianteListadoDTO } from '../models/estudiante-listado.dto';
   providedIn: 'root'
 })
 export class EstudianteService {
-  private baseUrl = 'http://localhost:8080/api/estudiantes';
+  private baseUrl = environment.apiUrl + '/estudiantes';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /**
    * Consulta un estudiante por numero de documento.

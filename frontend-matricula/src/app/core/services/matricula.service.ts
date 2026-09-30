@@ -1,20 +1,21 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { AulaDTO } from '../models/aula.dto';
-import { MatriculaRequestDTO } from '../models/matricula-request.dto';
-import { MatriculaResponseDTO } from '../models/matricula-response.dto';
 import { InscripcionRequestDTO } from '../models/inscripcion-request.dto';
 import { InscripcionResponseDTO } from '../models/inscripcion-response.dto';
+import { MatriculaRequestDTO } from '../models/matricula-request.dto';
+import { MatriculaResponseDTO } from '../models/matricula-response.dto';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MatriculaService {
-  private baseUrl = 'http://localhost:8080/api';
+  private baseUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
 
   guardarInscripcion(request: InscripcionRequestDTO): Observable<InscripcionResponseDTO> {
