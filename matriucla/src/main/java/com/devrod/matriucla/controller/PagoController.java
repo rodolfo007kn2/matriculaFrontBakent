@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
-@CrossOrigin(origins = "*") // Permite peticiones desde Angular, React, etc.
 @RestController
 @RequestMapping("/api/pagos")
 @RequiredArgsConstructor

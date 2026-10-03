@@ -19,6 +19,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/estudiantes/estudiantes-lista/estudiantes-lista.component').then(m => m.EstudiantesListaComponent)
       },
       {
+        path: 'matricula/lista',
+        loadComponent: () => import('./features/matricula/matriculas-lista/matriculas-lista.component').then(m => m.MatriculasListaComponent)
+      },
+      {
         path: '',
         redirectTo: 'matricula/generar',
         pathMatch: 'full'
